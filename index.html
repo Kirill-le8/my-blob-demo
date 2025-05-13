@@ -68,7 +68,7 @@
   <canvas id="blob2-canvas"></canvas>
   <canvas id="blob4-canvas"></canvas>
 
-  <!-- Three.js как модуль -->
+  <!-- ПОДКЛЮЧЕНИЕ ЧЕРЕЗ ES-МОДУЛЬ -->
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.module.js';
     import {{ GLTFLoader }} from 'https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/GLTFLoader.js';
@@ -127,7 +127,7 @@
       }});
     }}
 
-    // Загружаем блобы
+    // Загрузка всех блобов
     loadBlob('blob1-canvas', 'test_-_blob_1.glb', (canvas, model) => {{
       const button = document.getElementById('showreelBtn');
       button.addEventListener('mouseenter', () => canvas.dispatchEvent(new Event('mouseenter')));
