@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blob Demo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      overflow-x: hidden;
+      background: #fff;
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      position: relative;
+    }
+    .showreel-button {
+      padding: 20px 40px;
+      background: #e0f0ff;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 2;
+    }
+    h1 {
+      text-align: center;
+      font-size: 48px;
+      margin-top: 80px;
+    }
+    canvas {
+      position: absolute;
+      pointer-events: none;
+    }
+    #blob1-canvas {
+      width: 200px;
+      height: 200px;
+      right: 10%;
+      top: 40%;
+      transform: translateY(-50%);
+    }
+    #blob2-canvas {
+      width: 150px;
+      height: 150px;
+      left: 10%;
+      top: 80%;
+    }
+    #blob4-canvas {
+      width: 150px;
+      height: 150px;
+      right: 10%;
+      top: 85%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="showreel-button" id="showreelBtn">ШОУРИЛ</div>
+    <canvas id="blob1-canvas"></canvas>
+  </div>
+
+  <h1>ТИМБИЛДИНГИ</h1>
+  <canvas id="blob2-canvas"></canvas>
+  <canvas id="blob4-canvas"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.156.1/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+    function loadBlob(canvasId, modelPath, setup) {
+      const canvas = document.getElementById(canvasId);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(35, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(3, 3, 3);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+      camera.position.z = 2;
+
+      const loader = new THREE.GLTFLoader();
+      loader.load(modelPath, gltf => {
+        const model = gltf.scene;
+
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3()).length();
+        const scale = 1.5 / size;
+        model.scale.setScalar(scale);
+        model.position.sub(center.multiplyScalar(scale));
+
+        scene.add(model);
+
+        let angle = 0;
+        let hover = false;
+
+        if (setup) setup(canvas, model);
+
+        canvas.addEventListener('mouseenter', () => hover = true);
+        canvas.addEventListener('mouseleave', () => hover = false);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          angle += hover ? 0.03 : 0.005;
+          model.rotation.y = angle;
+
+          if (hover) {
+            const s = scale * (1.03 + 0.02 * Math.sin(angle * 4));
+            model.scale.set(s, s, s);
+          } else {
+            model.scale.setScalar(scale);
+          }
+
+          renderer.render(scene, camera);
+        }
+
+        animate();
+      });
+    }
+
+    // Загрузка всех блобов
+    loadBlob('blob1-canvas', 'test_-_blob_1.glb', (canvas, model) => {
+      const button = document.getElementById('showreelBtn');
+      button.addEventListener('mouseenter', () => canvas.dispatchEvent(new Event('mouseenter')));
+      button.addEventListener('mouseleave', () => canvas.dispatchEvent(new Event('mouseleave')));
+    });
+
+    loadBlob('blob2-canvas', 'test_-_blob_2.glb');
+    loadBlob('blob4-canvas', 'test_-_blob_4.glb');
+  </script>
+
+</body>
+</html>
