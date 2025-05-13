@@ -68,10 +68,10 @@
   <canvas id="blob2-canvas"></canvas>
   <canvas id="blob4-canvas"></canvas>
 
-  <!-- ПОДКЛЮЧЕНИЕ МОДУЛЕЙ -->
+  <!-- ПРАВИЛЬНО ПОДКЛЮЧЕННЫЕ ES-МОДУЛИ -->
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.module.js';
-    import {{ GLTFLoader }} from 'https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/GLTFLoader.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/GLTFLoader.js';
 
     function loadBlob(canvasId, modelPath, setup) {
       const canvas = document.getElementById(canvasId);
