@@ -68,16 +68,16 @@
   <canvas id="blob2-canvas"></canvas>
   <canvas id="blob4-canvas"></canvas>
 
-  <!-- ПОДКЛЮЧЕНИЕ ЧЕРЕЗ ES-МОДУЛЬ -->
+  <!-- ПОДКЛЮЧЕНИЕ МОДУЛЕЙ -->
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.module.js';
     import {{ GLTFLoader }} from 'https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/GLTFLoader.js';
 
-    function loadBlob(canvasId, modelPath, setup) {{
+    function loadBlob(canvasId, modelPath, setup) {
       const canvas = document.getElementById(canvasId);
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(35, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-      const renderer = new THREE.WebGLRenderer({{ canvas, alpha: true, antialias: true }});
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -88,7 +88,7 @@
       camera.position.z = 2;
 
       const loader = new GLTFLoader();
-      loader.load(modelPath, gltf => {{
+      loader.load(modelPath, gltf => {
         const model = gltf.scene;
 
         const box = new THREE.Box3().setFromObject(model);
@@ -108,31 +108,31 @@
         canvas.addEventListener('mouseenter', () => hover = true);
         canvas.addEventListener('mouseleave', () => hover = false);
 
-        function animate() {{
+        function animate() {
           requestAnimationFrame(animate);
           angle += hover ? 0.03 : 0.005;
           model.rotation.y = angle;
 
-          if (hover) {{
+          if (hover) {
             const s = scale * (1.03 + 0.02 * Math.sin(angle * 4));
             model.scale.set(s, s, s);
-          }} else {{
+          } else {
             model.scale.setScalar(scale);
-          }}
+          }
 
           renderer.render(scene, camera);
-        }}
+        }
 
         animate();
-      }});
-    }}
+      });
+    }
 
     // Загрузка всех блобов
-    loadBlob('blob1-canvas', 'test_-_blob_1.glb', (canvas, model) => {{
+    loadBlob('blob1-canvas', 'test_-_blob_1.glb', (canvas, model) => {
       const button = document.getElementById('showreelBtn');
       button.addEventListener('mouseenter', () => canvas.dispatchEvent(new Event('mouseenter')));
       button.addEventListener('mouseleave', () => canvas.dispatchEvent(new Event('mouseleave')));
-    }});
+    });
 
     loadBlob('blob2-canvas', 'test_-_blob_2.glb');
     loadBlob('blob4-canvas', 'test_-_blob_4.glb');
